@@ -1,6 +1,5 @@
 <?php
 include('config.php');
-
 session_start();
 
 // Check if user is logged in, if not, redirect to login page
@@ -9,23 +8,23 @@ if (!isset($_SESSION["id"]) || empty($_SESSION["id"])) {
     exit;
 }
 
-// Get the user ID from the session
 $user_id = $_SESSION["id"];
 
-// Fetch loan types from the database
+// Fetch loan types
 $sql_loans = "SELECT loan_type_id, loan_name FROM loan_types";
 $result_loans = $conn->query($sql_loans);
 
-// Process loan request form submission
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $loan_type_id = $_POST["loan_type_id"];
     $amount_requested = $_POST["amount_requested"];
+    $duration_months = $_POST["duration_months"];
 
-    // Insert the loan application into the database
-    $sql_insert = "INSERT INTO loan_applications (customer_id, loan_type_id, amount_requested, application_status, created_at, updated_at)
-                   VALUES (?, ?, ?, 'pending', NOW(), NOW())";
+    // Insert into DB
+    $sql_insert = "INSERT INTO loan_applications (customer_id, loan_type_id, amount_requested, duration_months, application_status, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, 'pending', NOW(), NOW())";
     $stmt = $conn->prepare($sql_insert);
-    $stmt->bind_param("iii", $user_id, $loan_type_id, $amount_requested);
+    $stmt->bind_param("iiii", $user_id, $loan_type_id, $amount_requested, $duration_months);
 
     if ($stmt->execute()) {
         $success_message = "Loan application submitted successfully! Your application is now pending.";
@@ -41,14 +40,12 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Request Loan</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/style.css">
-
     <style>
         .form-container {
             max-width: 600px;
@@ -82,12 +79,11 @@ $conn->close();
         }
     </style>
 </head>
-
 <body>
     <?php include('navbar.php'); ?>
 
     <div class="container mt-5">
-        <!-- Display Success or Error Message -->
+        <!-- Messages -->
         <?php if (isset($success_message)) { ?>
             <div class="alert alert-success"><?php echo $success_message; ?></div>
         <?php } elseif (isset($error_message)) { ?>
@@ -109,20 +105,26 @@ $conn->close();
                             <?php } ?>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="amount_requested">Amount Requested:</label>
                         <input type="number" class="form-control" id="amount_requested" name="amount_requested" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="duration_months">Duration (in months):</label>
+                        <input type="number" class="form-control" id="duration_months" name="duration_months" min="1" required>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Submit Application</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS & dependencies -->
+    <!-- Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-
 </html>

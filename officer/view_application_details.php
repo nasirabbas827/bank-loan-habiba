@@ -16,7 +16,8 @@ $application_id = isset($_GET['application_id']) ? $_GET['application_id'] : 0;
 
 // Fetch the application details
 $sql_application = "SELECT la.application_id, lt.loan_name, la.amount_requested, la.application_status, la.feedback, 
-                            u.full_name AS customer_name, u.email, u.phone, u.age, u.bio
+                           la.duration_months, la.created_at, la.updated_at,
+                           u.full_name AS customer_name, u.email, u.phone, u.age, u.bio
                     FROM loan_applications la
                     JOIN loan_types lt ON la.loan_type_id = lt.loan_type_id
                     JOIN users u ON la.customer_id = u.id
@@ -83,6 +84,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label><strong>Amount Requested:</strong></label> <?php echo number_format($row['amount_requested'], 2); ?>
             </div>
+            <div class="form-group">
+            <label><strong>Loan Duration:</strong></label> <?php echo $row['duration_months']; ?> months
+            </div>
+           
             <div class="form-group">
                 <label><strong>Status:</strong></label>
                 <select name="application_status" class="form-control" required>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2024 at 09:08 AM
+-- Generation Time: Apr 15, 2025 at 08:33 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -61,7 +61,8 @@ CREATE TABLE `loanofficers` (
 --
 
 INSERT INTO `loanofficers` (`id`, `username`, `password`, `email`, `phone_number`, `created_at`, `updated_at`) VALUES
-(1, 'officer12', '$2y$10$4hmsIshO2wTQJjss3W3ASOJlK5hO07twjRTzryWyjHsi2pd.p1Nnq', 'officer@gmail.com', '31765268270', '2024-11-25 06:31:20', '2024-11-25 06:34:09');
+(1, 'officer12', '$2y$10$4hmsIshO2wTQJjss3W3ASOJlK5hO07twjRTzryWyjHsi2pd.p1Nnq', 'officer@gmail.com', '31765268270', '2024-11-25 06:31:20', '2024-11-25 06:34:09'),
+(2, 'ytloan12', '$2y$10$KbyEaj0Y6JzM5U71MCUy/eZAmYsC4GFC.uQUs1DVtQC5azyC9xU1O', 'ytloan@gmail.com', '03266029050', '2025-03-01 17:14:53', '2025-03-01 17:14:53');
 
 -- --------------------------------------------------------
 
@@ -74,6 +75,7 @@ CREATE TABLE `loan_applications` (
   `customer_id` int(11) NOT NULL,
   `loan_type_id` int(11) NOT NULL,
   `amount_requested` decimal(10,2) NOT NULL,
+  `duration_months` int(11) NOT NULL,
   `application_status` enum('pending','approved','rejected') DEFAULT 'pending',
   `feedback` text DEFAULT NULL,
   `assigned_officer_id` int(11) DEFAULT NULL,
@@ -85,9 +87,12 @@ CREATE TABLE `loan_applications` (
 -- Dumping data for table `loan_applications`
 --
 
-INSERT INTO `loan_applications` (`application_id`, `customer_id`, `loan_type_id`, `amount_requested`, `application_status`, `feedback`, `assigned_officer_id`, `created_at`, `updated_at`) VALUES
-(1, 4, 3, 450000.00, 'approved', 'Approved apploication ', 1, '2024-11-25 06:24:41', '2024-11-25 07:56:15'),
-(2, 4, 9, 2321.00, 'approved', 'dsa', 1, '2024-11-25 07:11:17', '2024-11-25 07:11:40');
+INSERT INTO `loan_applications` (`application_id`, `customer_id`, `loan_type_id`, `amount_requested`, `duration_months`, `application_status`, `feedback`, `assigned_officer_id`, `created_at`, `updated_at`) VALUES
+(1, 4, 3, 450000.00, 0, 'approved', 'Approved apploication ', 2, '2024-11-25 06:24:41', '2025-03-01 16:17:21'),
+(2, 4, 9, 2321.00, 0, 'approved', 'dsa', 1, '2024-11-25 07:11:17', '2024-11-25 07:11:40'),
+(3, 4, 9, 780.00, 0, 'pending', NULL, NULL, '2025-03-01 05:47:33', '2025-03-01 05:47:33'),
+(4, 5, 3, 230000.00, 0, 'approved', 'dfsaeas', 2, '2025-03-01 16:16:08', '2025-03-01 16:25:06'),
+(5, 4, 2, 23000.00, 3, 'approved', 'd', 2, '2025-04-15 06:21:39', '2025-04-15 06:31:50');
 
 -- --------------------------------------------------------
 
@@ -113,7 +118,9 @@ CREATE TABLE `loan_disbursements` (
 INSERT INTO `loan_disbursements` (`disbursement_id`, `application_id`, `amount_disbursed`, `disbursement_date`, `repayment_status`, `transaction_image`, `created_at`, `updated_at`) VALUES
 (1, 1, 23000.00, '2024-11-27', 'closed', 'uploads/67442b1999105.png', '2024-11-25 07:02:16', '2024-11-25 07:47:11'),
 (2, 1, 12000.00, '2024-11-27', 'closed', 'uploads/67442b2fc957a.png', '2024-11-25 07:04:10', '2024-11-25 07:45:51'),
-(5, 2, 324.00, '2024-11-28', 'closed', 'uploads/67442b5599372.png', '2024-11-25 07:11:54', '2024-11-25 07:46:29');
+(5, 2, 324.00, '2024-11-28', 'closed', 'uploads/67442b5599372.png', '2024-11-25 07:11:54', '2024-11-25 07:46:29'),
+(6, 4, 23000.00, '2025-03-01', 'closed', 'uploads/67c3354bab916.jpg', '2025-03-01 16:25:57', '2025-03-01 16:26:51'),
+(7, 4, 3243.00, '2025-04-05', 'active', NULL, '2025-03-01 16:26:10', '2025-03-01 16:26:10');
 
 -- --------------------------------------------------------
 
@@ -193,7 +200,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `phone`, `age`, `full_name`, `bio`) VALUES
-(4, 'user1', '$2y$10$ft8WRvMtWkYWeajNLu2VK.J4A3UIgYaK0cRYn5J0C8oE4q1fKB0HK', 'nasiryt.827@gmail.com', '3176526827', 23, 'NASIR ABBAS', 'IT ');
+(4, 'user1', '$2y$10$ft8WRvMtWkYWeajNLu2VK.J4A3UIgYaK0cRYn5J0C8oE4q1fKB0HK', 'nasiryt.827@gmail.com', '3176526827', 23, 'NASIR ABBAS', 'IT '),
+(5, 'newcustomer12', '$2y$10$XE2yWlfArEdmXUPslDi4a.SgHQOLYLC7meYvW1LltAwFFZcq14pAK', 'imran@gmail.com', '03266029050', 23, 'Imran Khan', 'dfds');
 
 --
 -- Indexes for dumped tables
@@ -261,19 +269,19 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `loanofficers`
 --
 ALTER TABLE `loanofficers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `loan_applications`
 --
 ALTER TABLE `loan_applications`
-  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `loan_disbursements`
 --
 ALTER TABLE `loan_disbursements`
-  MODIFY `disbursement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `disbursement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `loan_messages`
@@ -291,7 +299,7 @@ ALTER TABLE `loan_types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

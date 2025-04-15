@@ -13,7 +13,8 @@ if (!isset($_SESSION["id"]) || empty($_SESSION["id"])) {
 $user_id = $_SESSION["id"];
 
 // Fetch loan applications for the logged-in user
-$sql_applications = "SELECT la.application_id, lt.loan_name, la.amount_requested, la.application_status, la.feedback, la.created_at, la.updated_at
+$sql_applications = "SELECT la.application_id, lt.loan_name, la.amount_requested, la.application_status, la.feedback, 
+                            la.created_at, la.updated_at, la.duration_months
                      FROM loan_applications la
                      JOIN loan_types lt ON la.loan_type_id = lt.loan_type_id
                      WHERE la.customer_id = ?";
@@ -21,8 +22,7 @@ $stmt = $conn->prepare($sql_applications);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $stmt->store_result();
-$stmt->bind_result($application_id, $loan_name, $amount_requested, $application_status, $feedback, $created_at, $updated_at);
-
+$stmt->bind_result($application_id, $loan_name, $amount_requested, $application_status, $feedback, $created_at, $updated_at, $duration_months);
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +41,8 @@ $stmt->bind_result($application_id, $loan_name, $amount_requested, $application_
             margin: 20px auto;
         }
 
-        .loan-table th, .loan-table td {
+        .loan-table th,
+        .loan-table td {
             text-align: center;
             vertical-align: middle;
         }
@@ -68,6 +69,7 @@ $stmt->bind_result($application_id, $loan_name, $amount_requested, $application_
                         <tr>
                             <th>Loan Type</th>
                             <th>Amount Requested</th>
+                            <th>Duration</th> <!-- Added Duration Column -->
                             <th>Application Status</th>
                             <th>Feedback</th>
                             <th>Date Applied</th>
@@ -80,9 +82,10 @@ $stmt->bind_result($application_id, $loan_name, $amount_requested, $application_
                             <tr>
                                 <td><?php echo htmlspecialchars($loan_name); ?></td>
                                 <td><?php echo number_format($amount_requested, 2); ?></td>
+                                <td><?php echo $duration_months . ' months'; ?></td> <!-- Displaying Duration -->
                                 <td>
                                     <?php
-                                    // Display status in a formatted way
+                                    // Display application status
                                     if ($application_status == 'pending') {
                                         echo '<span class="badge badge-warning">Pending</span>';
                                     } elseif ($application_status == 'approved') {
@@ -93,7 +96,6 @@ $stmt->bind_result($application_id, $loan_name, $amount_requested, $application_
                                     ?>
                                 </td>
                                 <td><?php echo htmlspecialchars($feedback); ?></td>
-
                                 <td><?php echo date("Y-m-d H:i:s", strtotime($created_at)); ?></td>
                                 <td><?php echo date("Y-m-d H:i:s", strtotime($updated_at)); ?></td>
                                 <td>
